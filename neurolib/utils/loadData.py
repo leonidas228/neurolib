@@ -15,7 +15,7 @@ class Dataset:
     """Dataset class.
     """
 
-    def __init__(self, datasetName=None, normalizeCmats="max"):
+    def __init__(self, datasetName=None, normalizeCmats="max", filterSubcorticalAAL2=True):
         """
         Load the empirical data sets that are provided with `neurolib`. 
         
@@ -52,19 +52,22 @@ class Dataset:
         :type datasetName: str
         :param normalizeCmats: Normalization method for the structural connectivity matrix
         :type normalizeCmats: str
-
+        :param filterSubcorticalAAL2: Filter subcortical regions from files defined by the AAL2 atlas, defaults to False
+        :type filterSubcorticalAAL2: bool, optional
         """
         self.has_subjects = None
         if datasetName:
-            self.loadDataset(datasetName, normalizeCmats=normalizeCmats)
+            self.loadDataset(datasetName, normalizeCmats=normalizeCmats, filterSubcorticalAAL2=filterSubcorticalAAL2)
 
-    def loadDataset(self, datasetName, normalizeCmats="max"):
+    def loadDataset(self, datasetName, normalizeCmats="max", filterSubcorticalAAL2=True):
         """Load data into accessible class attributes.
         
         :param datasetName: Name of the dataset (must be in `datasets` directory)
         :type datasetName: str
         :param normalizeCmats: Normalization method for Cmats, defaults to "max"
         :type normalizeCmats: str, optional
+        :param filterSubcorticalAAL2: Filter subcortical regions from files defined by the AAL2 atlas, defaults to False
+        :type filterSubcorticalAAL2: bool, optional
         :raises NotImplementedError: If unknown normalization method is used
         """
         # the base directory of the dataset
@@ -75,7 +78,7 @@ class Dataset:
 
         # load all available subject data from disk to memory
         logging.info(f"Loading dataset {datasetName} from {self.dsBaseDirectory}.")
-        self._loadSubjectFiles(self.dsBaseDirectory, filterSubcorticalAAL2=True)
+        self._loadSubjectFiles(self.dsBaseDirectory, filterSubcorticalAAL2=filterSubcorticalAAL2)
         assert len(self.data) > 0, "No data loaded."
         assert self.has_subjects
 
